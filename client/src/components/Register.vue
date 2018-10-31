@@ -1,14 +1,14 @@
 <template>
   <div>
       <h1>Register</h1>
-      <input 
-        type="text" 
+      <input
+        type="text"
         name="email"
         v-model="email"
         placeholder="email" />
     <br>
-      <input 
-        type="password" 
+      <input
+        type="password"
         name="password"
         v-model="password"
         placeholder="password" />
@@ -25,16 +25,16 @@ import AuthenticationService from '@/services/AuthenticationService'
 export default {
   data () {
     return {
-        email: 'abc',
-        password: '123'
+      email: 'abc',
+      password: '123'
     }
   },
   methods: {
     async register () {
-        await AuthenticationService.register({
-            email: this.email,
-            password: this.password
-        })
+      await AuthenticationService.register({
+        email: this.email,
+        password: this.password
+      })
     }
   }
 }
