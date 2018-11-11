@@ -2,31 +2,26 @@
   <v-container grid-list-xl text-xs-center>
     <v-layout column>
       <v-flex xs10 offset-xs1>
-        <panel title="Register">
-          <form
-            name="vue-tracker-form"
-            autocomplete="off">
-            <v-text-field
-              label="Email"
-              v-model="email"
-            ></v-text-field>
-          <br>
-            <v-text-field
-              label="Password"
-              type="password"
-              v-model="password"
-              autocomplete="new-password"
-            ></v-text-field>
-          </form>
-          <br>
-          <div class="error" v-html="error" />
-          <br>
-          <v-btn
+        <panel title="Login">
+          <v-text-field
+            label="Email"
+            v-model="email"
+          ></v-text-field>
+        <br>
+          <v-text-field
+            label="Password"
+            type="password"
+            v-model="password"
+          ></v-text-field>
+        <br>
+        <div class="error" v-html="error" />
+        <br>
+        <v-btn
             dark
             class="purple darken-3"
-            @click="register">
-            Register
-          </v-btn>
+            @click="login">
+            Login
+        </v-btn>
         </panel>
       </v-flex>
     </v-layout>
@@ -46,9 +41,9 @@ export default {
     }
   },
   methods: {
-    async register () {
+    async login () {
       try {
-        const response = await AuthenticationService.register({
+        const response = await AuthenticationService.login({
           email: this.email,
           password: this.password
         })
