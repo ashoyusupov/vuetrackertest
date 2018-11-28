@@ -84,7 +84,6 @@ export default {
         url: 'http://localhost:3000/api/' + tbl,
         mtype: 'get',
         datatype: 'json',
-        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
         sortname: 'SITE_ID',
         id: 'SITE_ID',
         sortorder: 'asc',

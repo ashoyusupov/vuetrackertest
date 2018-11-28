@@ -1,13 +1,13 @@
 module.exports = {
   port: process.env.PORT || 8087,
   db: {
-    database: process.env.DB_NAME || 'tabtracker',
-    user: process.env.DB_USER || 'tabtracker',
-    password: process.env.DB_PASS || 'tabtracker',
+    database: process.env.DB_NAME || 'netperform',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || 'netproduct25',
     options: {
-      dialect: 'sqlite',
-      host: process.env.HOST || 'localhost',
-      storage: './tabtracker.sqlite'
+      dialect: 'mysql',
+      host: process.env.HOST || 'localhost'/* ,
+      storage: './tabtracker.sqlite' */
     }
   },
   authentication: {
