@@ -95,7 +95,7 @@ export default {
         rownumWidth: 40,
         rowList: [25, 50, 100, 200, 500, 1000, 10000],
         viewrecords: true,
-        gridview: true,
+        gridview: false,
         autoencode: true,
         rownumbers: true,
         shrinkToFit: false,
