@@ -1,7 +1,18 @@
-<template>
+<template ref="foo">
   <v-layout column>
     <v-flex xs10 fill-height>
       <panel-wide :title=this.$route.params.tbl>
+        <v-btn class="pink accent-2"
+            @click="navigateTo({name: `create`, params: { tbl: $route.params.tbl}})"
+            slot="action"
+            dark
+            small
+            absolute
+            right
+            middle
+            fab>
+            <v-icon>add</v-icon>
+        </v-btn>
         <table id='grid1'></table>
         <div id="gridpager"/>
       </panel-wide>
@@ -32,11 +43,23 @@ function resizeElements () {
 
   const pagerHeight = 25
 
-  const gridTitleHeight = 22 + 150
+  const gridTitleHeight = 22 + 200
 
   const gridTableHeight =
     windowHeight - headerHeight - pagerHeight - gridTitleHeight
   return gridTableHeight
+}
+
+function actionsFormatter (cellvalue, options, rowObjects, perm) {
+  let actionsEdit = ''
+  let actionsDel = ''
+  if (perm.includes('update')) {
+    actionsEdit = '<a href="#/edit/' + options.colModel.formatoptions.table + '/' + rowObjects['SITE_ID'] + '" class="yellow accent-0 v-btn v-btn--small theme--dark" style="height: 18px;min-width: 10px;"><i class="ui-icon ui-icon-pencil"></i></a>'
+  }
+  if (perm.includes('delete')) {
+    actionsDel = '<a href="#/delete/' + options.colModel.formatoptions.table + '/' + rowObjects['SITE_ID'] + '" class="red accent-2 v-btn v-btn--small theme--dark" style="height: 18px;min-width: 10px;"><i class="ui-icon ui-icon-trash"></i></a>'
+  }
+  return actionsEdit + actionsDel
 }
 
 export default {
@@ -46,6 +69,7 @@ export default {
   data () {
     return {
       songs: null,
+      permissions: null,
       songlist: [
         'title',
         'artist',
@@ -60,27 +84,46 @@ export default {
   },
   watch: {
     '$route.params.tbl': function (tbl) {
-      this.doStuff(tbl)
+      this.doStuff(tbl, this.$store.state)
     }
   },
   created: function () {
-    this.doStuff(this.$route.params.tbl)
+    this.doStuff(this.$route.params.tbl, this.$store.state)
   },
   methods: {
     navigateTo (route) {
       this.$router.push(route)
     },
-    async doStuff (tbl) {
+    async doStuff (tbl, tkn) {
+      let permi = JSON.parse(this.$store.state.permissions)
       $('#grid1').jqGrid('GridUnload')
       const windowHeight = $(window).height()
       const headerHeight = $('header').height()
       const pagerHeight = 25
-      const gridTitleHeight = 22 + 150
+      const gridTitleHeight = 22 + 200
       const gridTableHeight = windowHeight - headerHeight - pagerHeight - gridTitleHeight
       const jsFieldsX = await ProductService.describe(tbl)
+      jsFieldsX.unshift({
+        name: 'Actions',
+        index: 'Actions',
+        width: 120,
+        height: 28,
+        align: 'center',
+        sortable: false,
+        formatter: function (cellvalue, options, rowObject) {
+          return actionsFormatter(cellvalue, options, rowObject, permi[tbl])
+        },
+        formatoptions: {
+          table: tbl
+        }
+      }
+      )
 
       await $('#grid1').jqGrid({
         colModel: jsFieldsX,
+        loadBeforeSend: function (jqXHR) {
+          jqXHR.setRequestHeader('Authorization', tkn.token)
+        },
         url: 'http://localhost:3000/api/' + tbl,
         mtype: 'get',
         datatype: 'json',
@@ -93,7 +136,7 @@ export default {
         pager: $('#gridpager'),
         rowNum: 25,
         rownumWidth: 40,
-        rowList: [25, 50, 100, 200, 500, 1000, 10000],
+        rowList: [15, 25, 50, 100, 200, 500, 1000, 10000],
         viewrecords: true,
         gridview: false,
         autoencode: true,
@@ -102,6 +145,9 @@ export default {
         autowidth: true,
         height: gridTableHeight,
         postData: {
+          '_sbdG7JbC2e5vDQ': function () {
+            return JSON.stringify(tkn.user)
+          },
           '_sort': function () {
             return (($('#grid1').jqGrid('getGridParam', 'postData')['sord'] === 'desc') ? '-' : '') + $('#grid1').jqGrid('getGridParam', 'postData')['sidx']
           },

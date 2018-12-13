@@ -24,4 +24,9 @@ fs
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
+db.Groups = require('../models/Groups')(sequelize, Sequelize)
+db.UsersGroups = require('../models/UsersGroups')(sequelize, Sequelize)
+
+db.UsersGroups.belongsTo(db.Groups, { foreignKey: 'group_id', targetKey: 'id' })
+db.Groups.hasMany(db.UsersGroups, { foreignKey: 'group_id', targetKey: 'id' })
 module.exports = db

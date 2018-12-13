@@ -19,10 +19,20 @@
         </v-list-tile-action>
         <v-list-tile-title>Home</v-list-tile-title>
       </v-list-tile>
-
+      <v-list-tile
+        v-for="(table, key) in JSON.parse(this.$store.state.permissions)"
+        :key="key"
+        @click="navigateTo({name: `products`, params: { tbl: key}})"
+      >
+        <v-list-tile-action>
+          <v-icon>table</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>{{key}}</v-list-tile-title>
+      </v-list-tile>
       <v-list-group
         prepend-icon="account_circle"
         value="true"
+        v-if="$store.state.groupId===1"
       >
         <v-list-tile slot="activator">
           <v-list-tile-title>Users</v-list-tile-title>
@@ -90,12 +100,12 @@
         Browse
       </v-btn>
       <v-btn
-        v-for="(table, key) in tables"
+        v-for="(table, key) in JSON.parse(this.$store.state.permissions)"
         :key="key"
         flat
         dark
-        @click="navigateTo({name: `products`, params: { tbl: table.resource}})">
-        {{table.resource}}
+        @click="navigateTo({name: `products`, params: { tbl: key}})">
+        {{key}}
       </v-btn>
     </v-toolbar-items>
     <v-spacer></v-spacer>
@@ -113,7 +123,7 @@
         dark
         v-if="!$store.state.isUserLoggedIn"
         @click="navigateTo({name: 'register'})">
-          Sign Up
+          Register
       </v-btn>
 
       <v-btn
@@ -129,7 +139,7 @@
 </template>
 
 <script>
-import ProductService from '@/services/ProductService'
+// import ProductService from '@/services/ProductService'
 
 export default {
   data () {
@@ -158,13 +168,14 @@ export default {
     logout () {
       this.$store.dispatch('setToken', null)
       this.$store.dispatch('setUser', null)
-      this.$route.push({
-        name: 'root'
-      })
+      this.$store.dispatch('setGroup', null)
+      this.$store.dispatch('setPerm', null)
+      this.$router.push({name: 'root'})
     }
   },
   async mounted () {
-    this.tables = (await ProductService.list()).data
+    console.log(this.$store.state.permissions)
+    this.tables = JSON.parse(this.$store.state.permissions)
   }
 }
 </script>

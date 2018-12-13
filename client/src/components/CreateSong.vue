@@ -48,21 +48,19 @@
 
         <v-flex xs8>
             <panel title="Song Structure" class="ml-2">
-                <v-text-field
+                <v-textarea
                 label="Tab"
-                multi-line
                 required
                 :rules="[required]"
                 v-model="song.tab"
-                ></v-text-field>
+                ></v-textarea>
 
-                <v-text-field
+                <v-textarea
                 label="Lyrics"
-                multi-line
                 required
                 :rules="[required]"
                 v-model="song.lyrics"
-                ></v-text-field>
+                ></v-textarea>
             </panel>
             <div class="danger-alert" v-if="error">
                 {{error}}

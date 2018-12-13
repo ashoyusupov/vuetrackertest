@@ -7,6 +7,9 @@ import Songs from '@/components/Songs'
 import CreateSong from '@/components/CreateSong'
 import ViewSong from '@/components/ViewSong'
 import Products from '@/components/Products'
+import CreateRecords from '@/components/CreateRecords'
+import EditRecords from '@/components/EditRecords'
+import DeleteRecords from '@/components/DeleteRecords'
 
 Vue.use(Router)
 
@@ -46,6 +49,21 @@ export default new Router({
       path: '/products/:tbl',
       name: 'products',
       component: Products
+    },
+    {
+      path: '/create/:tbl',
+      name: 'create',
+      component: CreateRecords
+    },
+    {
+      path: '/edit/:tbl/:id',
+      name: 'edit',
+      component: EditRecords
+    },
+    {
+      path: '/delete/:tbl/:id',
+      name: 'delete',
+      component: DeleteRecords
     }
   ]
 })

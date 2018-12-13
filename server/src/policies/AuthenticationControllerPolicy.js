@@ -6,7 +6,8 @@ module.exports = {
       email: Joi.string().email(),
       password: Joi.string().regex(
         new RegExp('^[a-zA-Z0-9]{8,32}$')
-      )
+      ),
+      group: Joi.required()
     }
 
     const { error } = Joi.validate(req.body, schema)
@@ -21,6 +22,11 @@ module.exports = {
         case 'password':
           res.status(400).send({
             error: 'Your password is not a valid'
+          })
+          break
+        case 'group':
+          res.status(400).send({
+            error: 'Group must be chosen'
           })
           break
         default:

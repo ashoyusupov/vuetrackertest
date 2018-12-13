@@ -17,6 +17,14 @@
               v-model="password"
               autocomplete="new-password"
             ></v-text-field>
+          <br>
+          <v-select
+            item-text="name"
+            item-value="id"
+            v-model="group"
+            :items="groups"
+            label="Group"
+          ></v-select>
           </form>
           <br>
           <div class="error" v-html="error" />
@@ -42,7 +50,10 @@ export default {
     return {
       email: '',
       password: '',
-      error: null
+      group: '',
+      groups: null,
+      error: null,
+      notification: null
     }
   },
   methods: {
@@ -50,14 +61,17 @@ export default {
       try {
         const response = await AuthenticationService.register({
           email: this.email,
-          password: this.password
+          password: this.password,
+          group: this.group
         })
-        this.$store.dispatch('setToken', response.data.token)
-        this.$store.dispatch('setUser', response.data.user)
+        this.notification = response.data.token
       } catch (error) {
         this.error = error.response.data.error
       }
     }
+  },
+  async mounted () {
+    this.groups = (await AuthenticationService.getAll()).data
   },
   components: {
     Panel
